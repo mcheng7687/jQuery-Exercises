@@ -7,10 +7,12 @@
         <h1>Let's add some movies here</h1>
         <form>
             <p>
+                <label for="movie-name">Movie Name: </label>
                 <input type="text" placeholder="Movie Name" id="movie-name">
             </p>
             <p>
-                <input type="text" placeholder="Rating" id="rating">
+                <label for="rating">Rating (0-10)</label>
+                <input type="number" id="rating" min="0" max="10">
             </p>
             <button id="add-movie">Add Movie</button>
         </form>
@@ -32,6 +34,11 @@
         $('#add-movie').on("click", function(evt) {
             evt.preventDefault();
 
+            if ($("#movie-name").val().length < 2) {
+                alert("Movie title is too short!");
+                return;
+            }
+
             addMovie({name: $("#movie-name").val(), rating: Number($("#rating").val())});
 
             $("#movie-name").val("");
@@ -40,6 +47,18 @@
 
         $('#sort').on("change",function () {
             sortMovies($("#sort").val());
+        });
+
+        $("ol").on("click", function (evt) {
+            evt.preventDefault();
+
+            if (evt.target.className === 'delete') {
+                movieList.splice(Number(evt.target.id),1);
+                evt.target.parentElement.remove();
+                //console.log(Number(evt.target.id));
+                organizeList(); 
+            }
+
         });
 
         function addMovie (movie) {
@@ -60,8 +79,8 @@
         
         function organizeList () {
             $('ol').empty();
-            for (let movie of movieList) {
-                $('ol').append(`<li>${movie.name} - Rating: ${movie.rating}</li>`);
+            for (let i = 0; i < movieList.length; i++) {
+                $('ol').append(`<li>${movieList[i].name} - Rating: ${movieList[i].rating} <button id=${i} class="delete">X</button> </li> `);
             }
         }
     </script>
