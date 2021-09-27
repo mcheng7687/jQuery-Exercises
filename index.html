@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Movie Rating</title>
+    </head>
+    <body>
+        <h1>Let's add some movies here</h1>
+        <form>
+            <p>
+                <input type="text" placeholder="Movie Name" id="movie-name">
+            </p>
+            <p>
+                <input type="text" placeholder="Rating" id="rating">
+            </p>
+            <button id="add-movie">Add Movie</button>
+        </form>
+
+        <section>
+            <ol id='movie-list'></ol>
+            <label for="sort">Sort list by:</label>
+            <select id="sort"> 
+                <option value="name">Name</option>
+                <option value="rating">Rating</option>
+            </select>
+        </section>
+    </body>
+        
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script>
+        const movieList = [];
+
+        $('#add-movie').on("click", function(evt) {
+            evt.preventDefault();
+
+            addMovie({name: $("#movie-name").val(), rating: Number($("#rating").val())});
+
+            $("#movie-name").val("");
+            $("#rating").val("");
+        });
+
+        $('#sort').on("change",function () {
+            sortMovies($("#sort").val());
+        });
+
+        function addMovie (movie) {
+            movieList.push(movie);
+            sortMovies($("#sort").val());
+        }
+
+        function sortMovies (sort) {
+            movieList.sort(function(a,b) {
+                let aName = a[sort], bName = b[sort];
+                if (sort === 'name')
+                    return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+                else if (sort==='rating')
+                    return ((aName > bName) ? -1 : ((aName < bName) ? 1 : 0));
+            });
+            organizeList();
+        }  
+        
+        function organizeList () {
+            $('ol').empty();
+            for (let movie of movieList) {
+                $('ol').append(`<li>${movie.name} - Rating: ${movie.rating}</li>`);
+            }
+        }
+    </script>
+</html>
